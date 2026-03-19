@@ -7,6 +7,8 @@ import br.com.fiap.api_rest.model.Produto;
 import br.com.fiap.api_rest.repository.ProdutoRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,18 +18,20 @@ import java.util.stream.Collectors;
 
 @Service
 public class ProdutoService {
-    private ProdutoRepository produtoRepository;
+
+    private final ProdutoRepository produtoRepository;
     private final ProdutoMapper produtoMapper;
 
-    @Autowired
     public ProdutoService(ProdutoRepository produtoRepository, ProdutoMapper produtoMapper) {
         this.produtoRepository = produtoRepository;
         this.produtoMapper = produtoMapper;
     }
 
+    //CRUD
     public Produto create(ProdutoRequest produtoRequest) {
         Produto produto = new Produto();
         BeanUtils.copyProperties(produtoRequest, produto);
+
         return produtoRepository.save(produto);
     }
 
@@ -38,17 +42,16 @@ public class ProdutoService {
         }
         return produtoMapper.produtoToResponse(produto.get());
     }
+    //page, pageable
+    public Page<ProdutoResponse> read(Pageable pageable){
+        return produtoRepository.findAll(pageable)
+                .map( produtoMapper::produtoToResponse);
 
-    public List<ProdutoResponse> read(){
-        List<Produto> produtos = produtoRepository.findAll();
-        return produtos
-                .stream()
-                .map(produtoMapper::produtoToResponse)
-                .collect(Collectors.toList());
+
     }
 
     public Produto update(Produto produto) {
-        return produtoRepository.save(produto);
+        return  produtoRepository.save(produto);
     }
 
     public void delete(UUID id) {

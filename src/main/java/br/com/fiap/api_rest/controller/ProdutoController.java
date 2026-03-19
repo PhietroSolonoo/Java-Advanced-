@@ -6,6 +6,10 @@ import br.com.fiap.api_rest.model.Produto;
 import br.com.fiap.api_rest.service.ProdutoService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,10 +21,13 @@ import java.util.UUID;
 @RequestMapping("/produtos")
 public class ProdutoController {
     private final ProdutoService produtoService;
-
     public ProdutoController(ProdutoService produtoService) {
         this.produtoService = produtoService;
     }
+
+
+    //CRUD - Create, Read, Update, Delete
+    //POST, GET, PUT, DELETE
 
     @PostMapping
     public ResponseEntity<Produto> createProduto(@Valid @RequestBody ProdutoRequest produto) {
@@ -30,20 +37,25 @@ public class ProdutoController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ProdutoResponse> readProduto(@PathVariable UUID id) {
+
+        //@PathVariable -> url/produtos?id=1
+        //@ResquestParam -> url/produtos/1
+
         ProdutoResponse produto = produtoService.read(id);
         if (produto == null) {
-            return new ResponseEntity<>(produto, HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(produto, HttpStatus.OK);
     }
 
     @GetMapping
-    public ResponseEntity<List<ProdutoResponse>> readProduto() {
-        List<ProdutoResponse> produtos = produtoService.read();
+    public ResponseEntity<Page<ProdutoResponse>> readProduto(@RequestParam(defaultValue = "0") Integer pageNumber) {
+        Pageable pageable = PageRequest.of(pageNumber, 2, Sort.by("nome").ascending());
+        Page<ProdutoResponse> produtos = produtoService.read(pageable);
         if (produtos.isEmpty()) {
-            return  new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(produtoService.read(), HttpStatus.OK);
+        return new ResponseEntity<>(produtos, HttpStatus.OK);
     }
 
     @PutMapping
@@ -61,4 +73,5 @@ public class ProdutoController {
         produtoService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
 }
