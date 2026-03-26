@@ -1,5 +1,6 @@
 package br.com.fiap.api_rest.service;
 
+import br.com.fiap.api_rest.dto.ProdutoLista;
 import br.com.fiap.api_rest.dto.ProdutoRequest;
 import br.com.fiap.api_rest.dto.ProdutoResponse;
 import br.com.fiap.api_rest.mapper.ProdutoMapper;
@@ -18,20 +19,18 @@ import java.util.stream.Collectors;
 
 @Service
 public class ProdutoService {
-
-    private final ProdutoRepository produtoRepository;
+    private ProdutoRepository produtoRepository;
     private final ProdutoMapper produtoMapper;
 
+    @Autowired
     public ProdutoService(ProdutoRepository produtoRepository, ProdutoMapper produtoMapper) {
         this.produtoRepository = produtoRepository;
         this.produtoMapper = produtoMapper;
     }
 
-    //CRUD
     public Produto create(ProdutoRequest produtoRequest) {
         Produto produto = new Produto();
         BeanUtils.copyProperties(produtoRequest, produto);
-
         return produtoRepository.save(produto);
     }
 
@@ -42,16 +41,15 @@ public class ProdutoService {
         }
         return produtoMapper.produtoToResponse(produto.get());
     }
-    //page, pageable
-    public Page<ProdutoResponse> read(Pageable pageable){
-        return produtoRepository.findAll(pageable)
-                .map( produtoMapper::produtoToResponse);
 
-
+    public Page<ProdutoLista> read(Pageable pageable){
+        return produtoRepository
+                .findAll(pageable)
+                .map(produtoMapper::produtoToProdutoLista);
     }
 
     public Produto update(Produto produto) {
-        return  produtoRepository.save(produto);
+        return produtoRepository.save(produto);
     }
 
     public void delete(UUID id) {

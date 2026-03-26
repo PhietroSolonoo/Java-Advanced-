@@ -14,11 +14,11 @@ public class Produto {
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id")
     private UUID id;
-    @Column(name = "nome_produto")
+    @Column(name = "nome")
     private String nome;
-    @Column(name ="preco_produto")
+    @Column(name = "preco")
     private BigDecimal preco;
-    @Column(name = "data_validade")
+    @Column(name = "expiracao")
     private LocalDate expiracao;
 
     public Produto() {
@@ -28,6 +28,22 @@ public class Produto {
         this.nome = nome;
         this.preco = preco;
         this.expiracao = expiracao;
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
     }
 
     public BigDecimal getPreco() {
@@ -44,21 +60,5 @@ public class Produto {
 
     public void setExpiracao(LocalDate expiracao) {
         this.expiracao = expiracao;
-    }
-
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
     }
 }
