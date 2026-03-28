@@ -6,8 +6,14 @@ import br.com.fiap.api_rest.dto.ProdutoResponse;
 import br.com.fiap.api_rest.model.Produto;
 import br.com.fiap.api_rest.service.ProdutoService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.info.Contact;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jdk.jfr.ContentType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;import org.springframework.data.domain.PageRequest;import org.springframework.data.domain.Pageable;import org.springframework.data.domain.Sort;import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -44,6 +50,13 @@ public class ProdutoController {
     }
 
     @Operation(summary = "Busca produtos por página")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "Página de produtos retornada com sucesso!",
+                    content = @Content(mediaType = "aplication/json",
+                            schema = @Schema(implementation = ProdutoLista.class))),
+            @ApiResponse(responseCode = "404", description = "Nenhum produto encontrado", content = @Content(schema = @Schema()))
+    })
     @GetMapping
     public ResponseEntity<Page<ProdutoLista>> readProduto(@RequestParam(defaultValue = "0") Integer pageNumber) {
         Pageable pageable = PageRequest.of(pageNumber,2,Sort.by("nome").ascending());
