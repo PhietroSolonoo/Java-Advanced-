@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -20,6 +21,10 @@ public class Produto {
     private BigDecimal preco;
     @Column(name = "expiracao")
     private LocalDate expiracao;
+    private Categoria categoria;
+    private int estoque;
+    @ManyToMany(mappedBy = "produtos")
+    private List<Pedido> pedidos;
 
     public Produto() {
     }
@@ -28,6 +33,8 @@ public class Produto {
         this.nome = nome;
         this.preco = preco;
         this.expiracao = expiracao;
+        this.categoria = categoria;
+        this.estoque = estoque;
     }
 
     public UUID getId() {
@@ -60,5 +67,13 @@ public class Produto {
 
     public void setExpiracao(LocalDate expiracao) {
         this.expiracao = expiracao;
+    }
+
+    public Categoria getCategoria() {
+        return categoria;
+    }
+
+    public void setCategoria(Categoria categoria) {
+        this.categoria = categoria;
     }
 }

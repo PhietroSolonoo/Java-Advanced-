@@ -1,9 +1,11 @@
 package br.com.fiap.api_rest.model;
 
 public enum Categoria {
-    ELETRONICOS("Eletrônicos"),
-    LIVROS("Livros"),
-    OUTROS("Outros");
+    BEBIDA("Eletrônicos"),
+    ESSENCIA("Livros"),
+    NARGUILE("Outros");
+
+
 
     private String descricao;
 
