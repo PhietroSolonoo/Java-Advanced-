@@ -18,10 +18,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/auth")
 public class AuthController {
     private final UsuarioRepository usuarioRepository;
-    private AuthenticationManager authenticationManager;
+    private final AuthenticationManager authenticationManager;
 
-    public  AuthController(UsuarioRepository usuarioRepository) {
+    public  AuthController(UsuarioRepository usuarioRepository, AuthenticationManager authenticationManager) {
         this.usuarioRepository = usuarioRepository;
+        this.authenticationManager = authenticationManager;
     }
     @PostMapping("/login")
     public ResponseEntity login(@RequestBody @Valid AuthDTO authDTO) {
@@ -35,7 +36,7 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity register(@RequestBody @Valid RegisterDTO registerDTO) {
-        if (usuarioRepository.findByLogin(registerDTO.login)) != null) {
+        if (usuarioRepository.findByLogin(registerDTO.login())) {
             return ResponseEntity.badRequest().build();
         }
         String encryptedPassword = new BCryptPasswordEncoder().encode(registerDTO.senha());
